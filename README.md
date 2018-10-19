@@ -1,1 +1,1 @@
-Shopping List With Mongoose Express ReactJS NodeJS
+Shopping List With MongoDB, Express, ReactJS, NodeJS (MERN)
