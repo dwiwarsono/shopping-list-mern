@@ -1,60 +1,58 @@
 import React, { Component } from 'react';
-import { Container, Modal, ModalHeader, ModalBody, ModalFooter, ListGroup, ListGroupItem, Button } from 'reactstrap';
+import { Container, ListGroup, ListGroupItem, Button} from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import uuid from 'uuid';
+// import uuid from 'uuid';
+import { connect } from 'react-redux';
+import { ambilItem, hapusItem } from '../actions/itemAction';
+import PropTypes from 'prop-types';
 
 
 class ShoppingList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: [
-        { id: uuid(), name: 'Telur' },
-        { id: uuid(), name: 'Telur' },
-        { id: uuid(), name: 'Telur' }
-      ],
-      modal: false
-    };
-    this._addItem = this._addItem.bind(this);
+  componentDidMount() {
+    this.props.ambilItem();
   }
 
-  _addItem() {
-    this.setState({
-      modal: !this.state.modal
-    });
+  fungsiHapus = (id) => {
+    this.props.hapusItem(id);
   }
 
   render() {
-
+    const { items } = this.props.item;
     return (
       <Container>
-        <Button
-          color="dark"
-          style={{ marginBottom: '2em' }}
-          onClick={this._addItem}>
-          Add Item
-        </Button>
-        <Modal isOpen={this.state.modal}>
-          <form onSubmit={this.handleSubmit}>
-            <ModalHeader>Add Item</ModalHeader>
-            <ModalBody>
-              <div className="row">
-                <div className="form-group col-md-4">
-                  <label>Name:</label>
-                  <input type="text" value={this.state.name} onChange={this.handleChangeName} className="form-control" />
-                </div>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <input type="submit" value="Submit" color="primary" className="btn btn-primary" />
-              <Button color="danger" onClick={this._addItem}>Cancel</Button>
-            </ModalFooter>
-          </form>
-        </Modal>
+        <ListGroup>
+          <TransitionGroup className="shopping-list">
+            {items.map(({ id, name }) => (
+              <CSSTransition key={id} timeout={500} classNames="fade">
+                <ListGroupItem>
+                  <Button
+                    className="remove-btn"
+                    color="danger"
+                    size="sm"
+                    onClick={this.fungsiHapus.bind(this, id)}
+                  >
+                    &times;
+                  </Button>
+                  {name}
+                </ListGroupItem>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
+        </ListGroup>
       </Container>
-    )
+    );
   }
-
 }
 
-export default ShoppingList;
+ShoppingList.propTypes = {
+  ambilItem: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+  item: state.item
+}); 
+
+export default connect(mapStateToProps, 
+  {ambilItem, hapusItem }
+)(ShoppingList);
