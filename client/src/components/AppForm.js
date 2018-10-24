@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import { tambahItem } from '../actions/itemAction';
-import uuid from 'uuid';
+
 
 class AppForm extends Component {
   constructor() {
@@ -33,7 +33,6 @@ class AppForm extends Component {
     event.preventDefault();
 
     const newItem = {
-      id: uuid(),
       name: this.state.name
     }
 
